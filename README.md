@@ -31,6 +31,7 @@ But you can also add multiple fragments as an array of dicts.
 
 ```python
 result = teng.generatePage(templateString="<?teng debug?>", data=root, configFilename="/some/conf.conf")
+
 print(result["output"])
 ```
 
