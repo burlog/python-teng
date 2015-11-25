@@ -2,7 +2,7 @@
 
 Python module for template engine [TENG](https://github.com/burlog/teng) supporting both 2 and 3 pytnon versions. It should be compatible with original python module.
 
-## Simple usage
+## Usage
 
 ```python
 from teng import Teng
