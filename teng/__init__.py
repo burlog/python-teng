@@ -57,6 +57,8 @@ FileWriter.dump = lambda self: ""
 def _add_value(frag, name, value):
     if isinstance(value, Mapping):
         return _add_fragment(frag, name, value)
+    elif isinstance(value, ("".__class__, u"".__class__)):
+        return _add_variable(frag, name, value)
     elif isinstance(value, Iterable):
         return _add_fragments(frag, name, value)
     return _add_variable(frag, name, value)
@@ -108,6 +110,8 @@ def _make_error_entry(error_entry):
     }
 
 def _create_data_root(self, data, encoding=None):
+    if encoding and encoding.lower() != "utf-8":
+        raise NotImplementedError("UTF-8 encoding is supported only")
     frag = self._createDataRoot()
     if isinstance(data, Mapping):
         for name, value in data.items():
@@ -142,6 +146,8 @@ def _generate_page(self, templateFilename="", skin="",
     if outputFilename and outputFile:
         raise AttributeError("You can't supply both outputFilename "
                              "and outputFile at the same time")
+    if encoding and encoding.lower() != "utf-8":
+        raise NotImplementedError("UTF-8 encoding is supported only")
 
     # create root if need
     if not isinstance(data, Fragment):
