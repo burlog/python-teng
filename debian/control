@@ -1,4 +1,4 @@
-Source: mcache
+Source: python-teng
 Maintainer: Michal Bukovsky <michal.bukovsky@firma.seznam.cz>
 Section: python
 Priority: optional
