@@ -19,7 +19,7 @@ root = teng.createDataRoot({})
 Now you can add new fragment or update existing fragments with new values.
 
 ```python
-frag = root.addFragment("fruit", {"name": "apple"})
+frag = root.addFragment("fruit", {"name": "banana"})
 frag.addVariable("price", 3)
 frag.addVariable("weight", "120g")
 ```
