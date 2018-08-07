@@ -12,6 +12,7 @@
 #include <tengudf.h>
 #include <tengstructs.h>
 #include <boost/python.hpp>
+#include <boost/python/operators.hpp>
 #include <boost/python/raw_function.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 
@@ -21,10 +22,68 @@ using Teng::IntType_t;
 using Teng::Error_t;
 using Teng::Writer_t;
 using Teng::FileWriter_t;
+using Teng::UDFValue_t;
 
 namespace bp = boost::python;
 
 namespace {
+
+class UDFWrapper_t {
+public:
+    UDFWrapper_t(const std::string &name, bp::object callback)
+        : name(name), callback(new bp::object(callback))
+    {}
+
+    UDFValue_t operator()(const std::vector<UDFValue_t> &args) const {
+        bp::list python_args;
+        for (auto &arg: args) {
+            switch (arg.getType()) {
+            case UDFValue_t::Integer:
+                python_args.append(arg.getInt());
+                break;
+            case UDFValue_t::Real:
+                python_args.append(arg.getReal());
+                break;
+            case UDFValue_t::String:
+                python_args.append(bp::str(arg.getString()));
+                break;
+            default:
+                python_args.append(0);
+                break;
+            }
+        }
+        try {
+            auto python_result = (*callback)(*bp::tuple(python_args));
+            bp::extract<Teng::IntType_t> int_value(python_result);
+            if (int_value.check())
+                return UDFValue_t(int_value());
+            bp::extract<double> real_value(python_result);
+            if (real_value.check())
+                return UDFValue_t(real_value());
+            bp::extract<std::string> string_value(python_result);
+            if (string_value.check())
+                return UDFValue_t(string_value());
+            throw std::runtime_error(
+                "result type must be one of {int, float, string}"
+            );
+
+        } catch (const bp::error_already_set &) {
+            PyObject *exc, *value, *traceback;
+            PyErr_Fetch(&exc, &value, &traceback);
+            bp::handle<> exc_handle(exc);
+            bp::handle<> value_handle(bp::allow_null(value));
+            if (!exc_handle) throw std::runtime_error(__PRETTY_FUNCTION__);
+            throw std::runtime_error(
+                bp::extract<std::string>(bp::str(exc_handle))()
+                + ": " + bp::extract<std::string>(bp::str(value_handle))()
+            );
+        }
+    }
+
+protected:
+    std::string name;
+    bp::object *callback;
+};
 
 class PyWriter_t: public Writer_t {
 public:
@@ -173,9 +232,7 @@ static bool registerUdf(const std::string &name, bp::object callback) {
         throw bp::error_already_set();
     }
     if (Teng::findUDF("udf." + name)) return false;
-    // TODO(burlog): registerUDF(name, PythonUdf_t(name, callback));
-    PyErr_SetString(PyExc_NotImplementedError, "Udf not implemented yet");
-    throw bp::error_already_set();
+    Teng::registerUDF(name, UDFWrapper_t(name, callback));
     return true;
 }
 
