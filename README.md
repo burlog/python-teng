@@ -3,7 +3,6 @@
 Python module for template engine [TENG](https://github.com/burlog/teng) supporting both 2 and 3 python versions. It should be compatible with original python module and can be used in both 2 and 3 python versions.
 
 For now there are theese issues that can be fixed in the future:
- * user defined functions are not supported
  * other charsets than UTF-8 are not supported
 
 ## Usage
