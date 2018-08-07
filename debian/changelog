@@ -1,3 +1,9 @@
+python-teng (1.0.2) stable; urgency=low
+
+  * dependecies
+
+ -- Michal Bukovsky <michal.bukovsky@firma.seznam.cz>  Tue, 07 Aug 2018 12:32:32 +0100
+
 python-teng (1.0.1) stable; urgency=low
 
   * user defined functions implemented
