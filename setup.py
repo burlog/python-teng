@@ -39,8 +39,11 @@ setup(name="teng",
                              ["teng/rawteng.cc"],
                              extra_compile_args=["-W",
                                                  "-Wall",
+                                                 "-g",
+                                                 "-ggdb",
+                                                 "-O0",
                                                  "-Wextra",
                                                  "-Wconversion",
-                                                 "-std=c++11"],
+                                                 "-std=c++14"],
                              libraries=[boost_python, "teng"])])
 

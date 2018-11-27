@@ -274,7 +274,7 @@ Create new teng engine
 listSupportedContentTypes.__doc__ = """
 List content types supported by this engine.
 
-Returns tuple of two-item tuples with name of content type and 
+Returns tuple of two-item tuples with name of content type and
 comment on the content type.
 """
 
