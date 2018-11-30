@@ -1,3 +1,9 @@
+python-teng (4.0.0) stable; urgency=low
+
+  * libteng4
+
+ -- Michal Bukovsky <michal.bukovsky@firma.seznam.cz>  Fri, 30 Nov 2018 07:00:37 +0100
+
 python-teng (1.0.3) stable; urgency=low
 
   * fix dependecies for stretch
