@@ -70,7 +70,7 @@ struct fragment_value_to_python_t {
             return bp::incref(bp::object(*p.real()).ptr());
         case value_t::tag::frag:
             return bp::incref(bp::object(boost::ref(*p.fragment())).ptr());
-        case value_t::tag::frags:
+        case value_t::tag::list:
             return bp::incref(bp::object(boost::ref(*p.list())).ptr());
         case value_t::tag::frag_ptr:
             return bp::incref(bp::object(boost::ref(*p.fragment())).ptr());
