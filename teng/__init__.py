@@ -13,8 +13,10 @@ from rawteng import Teng
 from rawteng import listSupportedContentTypes
 from rawteng import registerUdf
 from rawteng import Fragment
+from rawteng import FragmentList
 from rawteng import Error
 from rawteng import FileWriter
+
 
 class IOWriter(object):
     def __init__(self, io):
@@ -34,6 +36,7 @@ class IOWriter(object):
     def dump(self):
         return ""
 
+
 class StringWriter(object):
     def __init__(self):
         self.output = ""
@@ -52,38 +55,133 @@ class StringWriter(object):
     def dump(self):
         return self.output
 
+
 FileWriter.dump = lambda self: ""
 
-def _add_value(frag, name, value):
-    if isinstance(value, Mapping):
-        return _add_fragment(frag, name, value)
-    elif isinstance(value, ("".__class__, u"".__class__)):
-        return _add_variable(frag, name, value)
-    elif isinstance(value, Iterable):
-        return _add_fragments(frag, name, value)
-    return _add_variable(frag, name, value)
 
-def _add_fragment(parent, mapping_key, mapping):
-    frag = parent._addFragment(mapping_key)
+def _fragment_list_add_value(frag, value):
+    if isinstance(value, Mapping):
+        return _fragment_list_add_fragment(frag, value)
+    elif isinstance(value, ("".__class__, u"".__class__, bytes)):
+        return _fragment_list_add_variable(frag, value)
+    elif isinstance(value, Iterable):
+        return _fragment_list_add_fragment_list(frag, value)
+    return _fragment_list_add_variable(frag, value)
+
+
+def _fragment_list_add_fragment(parent, mapping):
+    frag = parent._addFragment()
     for name, value in mapping.items():
-        _add_value(frag, name, value)
+        _fragment_add_value(frag, name, value)
     return frag
 
-def _add_fragments(parent, name, iterable):
-    for entry in iterable:
-        if not isinstance(entry, Mapping):
-            raise ValueError("Non mapping object for name '%s'" % name)
-        _add_fragment(parent, name, entry)
 
-def _add_variable(frag, name, value):
-    frag.addVariable(name, value)
+def _fragment_list_add_fragment_list(parent, iterable):
+    frag_list = parent._addFragmentList()
+    for item in iterable:
+        _fragment_list_add_value(frag_list, item)
+    return frag_list
 
-def _fragment_add_fragment(self, name, data):
+
+def _fragment_list_add_variable(frag, value):
+    frag.addVariable(value)
+
+
+def _impl_fragment_list_add_fragment(self, data):
     if not isinstance(data, Mapping):
         raise ValueError("The data object must be mapping")
-    return _add_fragment(self, name, data)
+    return _fragment_list_add_fragment(self, data)
 
-Fragment.addFragment = _fragment_add_fragment
+
+def _impl_fragment_list_add_fragment_list(self, data):
+    if not isinstance(data, Iterable):
+        raise ValueError("The data object must be iterable")
+    if isinstance(data, Mapping):
+        return _fragment_list_add_fragment_list(self, data.items())
+    return _fragment_list_add_fragment_list(self, data)
+
+
+FragmentList.addFragmentList = _impl_fragment_list_add_fragment_list
+FragmentList.addFragmentList.__doc__ = """
+Add fragment list at the end of fragment list.
+
+:param data: Fragment list data.
+
+:return: Created fragment list (type FragmentList).
+"""
+
+
+FragmentList.addFragment = _impl_fragment_list_add_fragment
+FragmentList.addFragment.__doc__ = """
+Add fragment at the end of fragment list.
+
+:param data: The fragment data..
+
+:return: Created fragment (type Fragment).
+"""
+
+
+FragmentList.addVariable.__doc__ = """
+Add variable at the end of fragment list.
+
+:param value: Value of variable.
+"""
+
+
+def _fragment_add_value(frag, name, value):
+    if isinstance(value, Mapping):
+        return _fragment_add_fragment(frag, name, value)
+    elif isinstance(value, ("".__class__, u"".__class__, bytes)):
+        return _fragment_add_variable(frag, name, value)
+    elif isinstance(value, Iterable):
+        return _fragment_add_fragment_list(frag, name, value)
+    return _fragment_add_variable(frag, name, value)
+
+
+def _fragment_add_fragment(parent, frag_name, mapping):
+    frag = parent._addFragment(frag_name)
+    for name, value in mapping.items():
+        _fragment_add_value(frag, name, value)
+    return frag
+
+
+def _fragment_add_fragment_list(parent, name, iterable):
+    frag_list = parent._addFragmentList(name)
+    for item in iterable:
+        _fragment_list_add_value(frag_list, item)
+    return frag_list
+
+
+def _fragment_add_variable(frag, name, value):
+    frag.addVariable(name, value)
+
+
+def _impl_fragment_add_fragment(self, name, data):
+    if not isinstance(data, Mapping):
+        raise ValueError("The data object must be mapping")
+    return _fragment_add_fragment(self, name, data)
+
+
+def _impl_fragment_add_fragment_list(self, name, data):
+    if not isinstance(data, Iterable):
+        raise ValueError("The data object must be iterable")
+    if isinstance(data, Mapping):
+        return _fragment_add_fragment_list(self, name, data.items())
+    return _fragment_add_fragment_list(self, name, data)
+
+
+Fragment.addFragmentList = _impl_fragment_add_fragment_list
+Fragment.addFragmentList.__doc__ = """
+Add list of fragments to this fragment.
+
+:param name: Name new fragment.
+:param data: Fragment list entries.
+
+:return: Created fragment list (type FragmentList).
+"""
+
+
+Fragment.addFragment = _impl_fragment_add_fragment
 Fragment.addFragment.__doc__ = """
 Add sub fragment to this fragment.
 
@@ -93,12 +191,14 @@ Add sub fragment to this fragment.
 :return: Created sub fragment (type Fragment).
 """
 
+
 Fragment.addVariable.__doc__ = """
 Add variable to this fragment.
 
 :param name:  Name of variable.
 :param value: Value of variable.
 """
+
 
 def _make_error_entry(error_entry):
     return {
@@ -109,24 +209,26 @@ def _make_error_entry(error_entry):
         "message": error_entry.message,
     }
 
+
 def _create_data_root(self, data, encoding=None):
     if encoding and encoding.lower() != "utf-8":
         raise NotImplementedError("UTF-8 encoding is supported only")
     frag = self._createDataRoot()
     if isinstance(data, Mapping):
         for name, value in data.items():
-            _add_value(frag, name, value)
+            _fragment_add_value(frag, name, value)
         return frag
     elif isinstance(data, Iterable):
         for mapping in data:
             if not isinstance(mapping, Mapping):
                 raise ValueError("The root iterable object must contain "
-                                 "solely mapping objects")
+                                 "solely mapping object")
             for name, value in mapping.items():
-                _add_value(frag, name, value)
+                _fragment_add_value(frag, name, value)
         return frag
     raise ValueError("The data param must be mapping object "
                      "or an iterable object of mapping objects")
+
 
 def _generate_page(self, templateFilename="", skin="",
                    templateString="", dataDefinitionFilename="",
@@ -178,10 +280,12 @@ def _generate_page(self, templateFilename="", skin="",
         "errorLog": [_make_error_entry(e) for e in errors.entries()]
     }
 
+
 def _dictionary_lookup(self, dictionaryFilename, language, key,
                        configFilename=""):
     return self._dictionaryLookup(configFilename, dictionaryFilename,
                                   language, key)
+
 
 Teng.createDataRoot = _create_data_root
 Teng.createDataRoot.__doc__ = """
@@ -193,6 +297,7 @@ Create root fragment.
 
 :return: Created fragment (type Fragment).
 """
+
 
 Teng.generatePage = _generate_page
 Teng.generatePage.__doc__ = """
@@ -247,6 +352,7 @@ result structure.
 }
 """
 
+
 Teng.dictionaryLookup = _dictionary_lookup
 Teng.dictionaryLookup.__doc__ = """
 Finds item in dictionary.
@@ -261,6 +367,7 @@ Finds item in dictionary.
 :return: Value for given key or None.
 """
 
+
 Teng.__doc__ = """
 Create new teng engine
 
@@ -271,12 +378,14 @@ Create new teng engine
 :param dictionaryCacheSize: Specifies max number of dictionaries in the cache.
 """
 
+
 listSupportedContentTypes.__doc__ = """
 List content types supported by this engine.
 
 Returns tuple of two-item tuples with name of content type and
 comment on the content type.
 """
+
 
 registerUdf.__doc__ = """
 Registers user-defined function.

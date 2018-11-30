@@ -293,6 +293,14 @@ int Teng_generatePage_string(
     return self.generatePage(args, data, writer, err);
 }
 
+void fragmentlist_add_variable(
+    FragmentList_t &self,
+    bp::object obj
+) {
+    if (obj.is_none()) self.addValue("");
+    else self.addValue(bp::extract<std::string>(bp::str(obj)));
+}
+
 void fragment_add_variable(
     Fragment_t &self,
     const std::string &name,
@@ -368,9 +376,6 @@ static bool registerUdf(const std::string &name, bp::object callback) {
     return true;
 }
 
-template <typename var_t>
-using av_t = void (Fragment_t::*)(const std::string &, var_t);
-
 } // namespace
 
 namespace Teng {
@@ -428,6 +433,18 @@ BOOST_PYTHON_MODULE(rawteng) {
     // teng fragment class
     bp::class_<FragmentList_t, boost::noncopyable>
         ("FragmentList", bp::no_init)
+        .def("_addFragment",
+            &FragmentList_t::addFragment, bp::return_internal_reference<>())
+        .def("_addFragmentList",
+            &FragmentList_t::addFragmentList, bp::return_internal_reference<>())
+        .def("addVariable",
+            &fragmentlist_add_variable)
+        .def("addVariable",
+            &FragmentList_t::addIntValue)
+        .def("addVariable",
+            &FragmentList_t::addRealValue)
+        .def("addVariable",
+            &FragmentList_t::addStringValue)
         .def("__getitem__",
              &fragment_list_get_item)
         .def("__len__",
@@ -443,14 +460,16 @@ BOOST_PYTHON_MODULE(rawteng) {
         ("Fragment", bp::no_init)
         .def("_addFragment",
             &Fragment_t::addFragment, bp::return_internal_reference<>())
+        .def("_addFragmentList",
+            &Fragment_t::addFragmentList, bp::return_internal_reference<>())
         .def("addVariable",
             &fragment_add_variable)
         .def("addVariable",
-            static_cast<av_t<const std::string &>>(&Fragment_t::addVariable))
+            &Fragment_t::addStringVariable)
         .def("addVariable",
-            static_cast<av_t<double>>(&Fragment_t::addVariable))
+            &Fragment_t::addRealVariable)
         .def("addVariable",
-            static_cast<av_t<IntType_t>>(&Fragment_t::addVariable))
+            &Fragment_t::addIntVariable)
         .def("__getitem__",
              &fragment_get_item)
         .def("__contains__",
