@@ -438,13 +438,13 @@ BOOST_PYTHON_MODULE(rawteng) {
         .def("_addFragmentList",
             &FragmentList_t::addFragmentList, bp::return_internal_reference<>())
         .def("addVariable",
-            &fragmentlist_add_variable)
-        .def("addVariable",
             &FragmentList_t::addIntValue)
         .def("addVariable",
             &FragmentList_t::addRealValue)
         .def("addVariable",
             &FragmentList_t::addStringValue)
+        .def("addVariable",
+            &fragmentlist_add_variable)
         .def("__getitem__",
              &fragment_list_get_item)
         .def("__len__",
@@ -463,13 +463,13 @@ BOOST_PYTHON_MODULE(rawteng) {
         .def("_addFragmentList",
             &Fragment_t::addFragmentList, bp::return_internal_reference<>())
         .def("addVariable",
-            &fragment_add_variable)
-        .def("addVariable",
             &Fragment_t::addStringVariable)
         .def("addVariable",
             &Fragment_t::addRealVariable)
         .def("addVariable",
             &Fragment_t::addIntVariable)
+        .def("addVariable",
+            &fragment_add_variable)
         .def("__getitem__",
              &fragment_get_item)
         .def("__contains__",
