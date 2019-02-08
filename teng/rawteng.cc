@@ -241,7 +241,7 @@ bp::object Teng_dictionaryLookup(
     const std::string &key
 ) {
     if (auto *s = self.dictionaryLookup(params_file, dic_file, language, key))
-        return bp::object(s);
+        return bp::object(*s);
     return bp::object();
 }
 
