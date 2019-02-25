@@ -234,7 +234,7 @@ def _generate_page(self, templateFilename="", skin="",
                    templateString="", dataDefinitionFilename="",
                    dictionaryFilename="", language="",
                    configFilename="", contentType="", data=None,
-                   outputFilename="", outputFile="", encoding=""):
+                   outputFilename="", outputFile="", encoding="utf-8"):
     # polish input
     if templateFilename and templateString:
         raise AttributeError("You can't supply both templateFilename "
