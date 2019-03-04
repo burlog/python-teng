@@ -139,7 +139,7 @@ def _generate_page(self, templateFilename="", skin="",
                              "and templateString at the same time")
     if not templateFilename and not templateString:
         raise AttributeError("Supply one of templateFilename or "
-                             "templateString param")
+                             "non empty templateString param")
     if language and not dictionaryFilename:
         raise AttributeError("Language param must go with "
                              "dictionaryFilename")
