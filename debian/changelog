@@ -1,3 +1,11 @@
+python-teng (4.0.1) stable; urgency=low
+
+  * fix result value of dict lookup
+  * order matters
+  * native data structures
+
+ -- Michal Bukovsky <michal.bukovsky@firma.seznam.cz>  Fri, 08 Feb 2019 14:55:35 +0100
+
 python-teng (4.0.0~burloglibteng4-1) stable; urgency=low
 
   * fix result value of dict lookup
