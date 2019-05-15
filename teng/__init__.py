@@ -15,6 +15,7 @@ from rawteng import registerUdf
 from rawteng import Fragment
 from rawteng import Error
 from rawteng import FileWriter
+from rawteng import StringWriter
 
 class IOWriter(object):
     def __init__(self, io):
@@ -33,26 +34,6 @@ class IOWriter(object):
 
     def dump(self):
         return ""
-
-class StringWriter(object):
-    def __init__(self):
-        self.output = ""
-
-    def write(self, data):
-        self.output += data
-        return 0
-
-    def write_slice(self, data, f, t):
-        self.output += data[f:t]
-        return 0
-
-    def flush(self):
-        return 0
-
-    def dump(self):
-        return self.output
-
-FileWriter.dump = lambda self: ""
 
 def _add_value(frag, name, value):
     if isinstance(value, Mapping):
@@ -274,7 +255,7 @@ Create new teng engine
 listSupportedContentTypes.__doc__ = """
 List content types supported by this engine.
 
-Returns tuple of two-item tuples with name of content type and 
+Returns tuple of two-item tuples with name of content type and
 comment on the content type.
 """
 
