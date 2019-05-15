@@ -25,6 +25,7 @@ using Teng::Error_t;
 using Teng::Writer_t;
 using Teng::FileWriter_t;
 using Teng::Value_t;
+using Teng::StringWriter_t;
 using GenPageArgs_t = Teng::Teng_t::GenPageArgs_t;
 
 namespace bp = boost::python;
@@ -148,11 +149,16 @@ protected:
 
 class PyWriter_t: public Writer_t {
 public:
-    PyWriter_t(bp::object writer): writer(writer) {}
+    PyWriter_t(bp::object writer)
+        : writer(writer),
+          write_string(writer.attr("write")),
+          write_slice(writer.attr("write_slice")),
+          flush_writer(writer.attr("flush"))
+    {}
 
     int write(const std::string &str) override {
         try {
-            return bp::extract<int>(writer.attr("write")(str));
+            return bp::extract<int>(write_string(str));
         } catch (const bp::error_already_set &) {
             throw std::runtime_error(extract_exc());
         }
@@ -160,7 +166,7 @@ public:
 
     int write(const char *str) override {
         try {
-            return bp::extract<int>(writer.attr("write")(str));
+            return bp::extract<int>(write_string(str));
         } catch (const bp::error_already_set &) {
             throw std::runtime_error(extract_exc());
         }
@@ -177,8 +183,7 @@ public:
         try {
             auto from = intv.first - str.begin();
             auto to = intv.second - str.begin();
-            auto slice = writer.attr("write_slice");
-            return bp::extract<int>(slice(str, from, to));
+            return bp::extract<int>(write_slice(str, from, to));
         } catch (const bp::error_already_set &) {
             throw std::runtime_error(extract_exc());
         }
@@ -186,13 +191,24 @@ public:
 
     int flush() override {
         try {
-            return bp::extract<int>(writer.attr("flush")());
+            return bp::extract<int>(flush_writer());
         } catch (const bp::error_already_set &) {
             throw std::runtime_error(extract_exc());
         }
     }
 
     bp::object writer;
+    bp::object write_string;
+    bp::object write_slice;
+    bp::object flush_writer;
+};
+
+class PyStringWriter_t: public StringWriter_t {
+public:
+    PyStringWriter_t(const PyStringWriter_t &) = delete;
+    PyStringWriter_t &operator=(const PyStringWriter_t &) = delete;
+    PyStringWriter_t(): StringWriter_t(output) {}
+    std::string output;
 };
 
 static bp::object Teng__init__(bp::tuple args, bp::dict kwargs) {
@@ -258,7 +274,6 @@ int Teng_generatePage_filename(
     bp::object pywriter,
     Error_t &err
 ) {
-    PyWriter_t writer(pywriter);
     GenPageArgs_t args;
     args.templateFilename = templateFilename;
     args.skin = get_string(skin);
@@ -267,6 +282,16 @@ int Teng_generatePage_filename(
     args.paramsFilename = get_string(param);
     args.encoding = get_string(encoding);
     args.contentType = get_string(contentType);
+
+    auto string_writer = bp::extract<PyStringWriter_t &>(pywriter);
+    if (string_writer.check())
+        return self.generatePage(args, data, string_writer(), err);
+
+    auto file_writer = bp::extract<FileWriter_t &>(pywriter);
+    if (file_writer.check())
+        return self.generatePage(args, data, file_writer(), err);
+
+    PyWriter_t writer(pywriter);
     return self.generatePage(args, data, writer, err);
 }
 
@@ -282,7 +307,6 @@ int Teng_generatePage_string(
     bp::object pywriter,
     Error_t &err
 ) {
-    PyWriter_t writer(pywriter);
     GenPageArgs_t args;
     args.templateString = templateString;
     args.dictFilename = get_string(dict);
@@ -290,6 +314,16 @@ int Teng_generatePage_string(
     args.paramsFilename = get_string(param);
     args.encoding = get_string(encoding);
     args.contentType = get_string(contentType);
+
+    auto string_writer = bp::extract<PyStringWriter_t &>(pywriter);
+    if (string_writer.check())
+        return self.generatePage(args, data, string_writer(), err);
+
+    auto file_writer = bp::extract<FileWriter_t &>(pywriter);
+    if (file_writer.check())
+        return self.generatePage(args, data, file_writer(), err);
+
+    PyWriter_t writer(pywriter);
     return self.generatePage(args, data, writer, err);
 }
 
@@ -427,7 +461,11 @@ BOOST_PYTHON_MODULE(rawteng) {
     // teng writers class
     bp::class_<FileWriter_t, boost::noncopyable>
         ("FileWriter", bp::init<std::string>())
-        .def("dump", +[] () { return std::string();})
+        .def("dump", +[] (const FileWriter_t &) {return std::string();})
+        ;
+    bp::class_<PyStringWriter_t, boost::noncopyable>
+        ("StringWriter", bp::init<>())
+        .def("dump", +[] (const PyStringWriter_t &self) {return self.output;})
         ;
 
     // teng fragment class
