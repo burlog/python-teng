@@ -1,3 +1,9 @@
+python-teng (1.0.7) stable; urgency=low
+
+  * fix the order of args
+
+ -- Michal Bukovsky <michal.bukovsky@firma.seznam.cz>  Tue, 04 Jun 2019 16:00:14 +0100
+
 python-teng (1.0.6) stable; urgency=low
 
   * setup.py -> 1.0.5
