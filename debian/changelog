@@ -1,3 +1,10 @@
+python-teng (4.0.1~burloglibteng4-1) stable; urgency=low
+
+  * fix args order of user defined functions
+  * optimalize rendering to file/string #2
+
+ -- Michal Bukovsky <michal.bukovsky@firma.seznam.cz>  Tue, 04 Jun 2019 17:38:18 +0100
+
 python-teng (4.0.1) stable; urgency=low
 
   * fix result value of dict lookup
