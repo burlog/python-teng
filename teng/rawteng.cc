@@ -121,6 +121,7 @@ public:
                     break;
                 }
             }
+            python_args.reverse();
             auto python_result = (*callback)(*bp::tuple(python_args));
             if (python_result.is_none())
                 return Value_t();
