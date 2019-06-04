@@ -53,6 +53,7 @@ public:
                 break;
             }
         }
+        python_args.reverse();
         try {
             auto python_result = (*callback)(*bp::tuple(python_args));
             bp::extract<Teng::IntType_t> int_value(python_result);
