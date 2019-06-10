@@ -332,8 +332,22 @@ void fragmentlist_add_variable(
     FragmentList_t &self,
     bp::object obj
 ) {
-    if (obj.is_none()) self.addValue("");
-    else self.addValue(bp::extract<std::string>(bp::str(obj)));
+    if (obj.is_none())
+        return self.addValue("");
+
+    bp::extract<int> is_int(obj);
+    if (is_int.check())
+        return self.addValue(is_int());
+
+    bp::extract<double> is_double(obj);
+    if (is_double.check())
+        return self.addValue(is_double());
+
+    bp::extract<std::string> is_string(obj);
+    if (is_string.check())
+        return self.addValue(is_string());
+
+    self.addValue(bp::extract<std::string>(bp::str(obj)));
 }
 
 void fragment_add_variable(
@@ -341,8 +355,22 @@ void fragment_add_variable(
     const std::string &name,
     bp::object obj
 ) {
-    if (obj.is_none()) self.addVariable(name, "");
-    else self.addVariable(name, bp::extract<std::string>(bp::str(obj)));
+    if (obj.is_none())
+        return self.addVariable(name, "");
+
+    bp::extract<int> is_int(obj);
+    if (is_int.check())
+        return self.addVariable(name, is_int());
+
+    bp::extract<double> is_double(obj);
+    if (is_double.check())
+        return self.addVariable(name, is_double());
+
+    bp::extract<std::string> is_string(obj);
+    if (is_string.check())
+        return self.addVariable(name, is_string());
+
+    self.addVariable(name, bp::extract<std::string>(bp::str(obj)));
 }
 
 std::string fragment_to_string(const Fragment_t &self) {
@@ -477,12 +505,6 @@ BOOST_PYTHON_MODULE(rawteng) {
         .def("_addFragmentList",
             &FragmentList_t::addFragmentList, bp::return_internal_reference<>())
         .def("addVariable",
-            &FragmentList_t::addIntValue)
-        .def("addVariable",
-            &FragmentList_t::addRealValue)
-        .def("addVariable",
-            &FragmentList_t::addStringValue)
-        .def("addVariable",
             &fragmentlist_add_variable)
         .def("__getitem__",
              &fragment_list_get_item)
@@ -501,12 +523,6 @@ BOOST_PYTHON_MODULE(rawteng) {
             &Fragment_t::addFragment, bp::return_internal_reference<>())
         .def("_addFragmentList",
             &Fragment_t::addFragmentList, bp::return_internal_reference<>())
-        .def("addVariable",
-            &Fragment_t::addStringVariable)
-        .def("addVariable",
-            &Fragment_t::addRealVariable)
-        .def("addVariable",
-            &Fragment_t::addIntVariable)
         .def("addVariable",
             &fragment_add_variable)
         .def("__getitem__",
