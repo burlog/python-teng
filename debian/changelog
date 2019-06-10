@@ -1,3 +1,9 @@
+python-teng (4.0.3~burloglibteng4-1) stable; urgency=low
+
+  * libteng-dev (>= 4.0.7)
+
+ -- Michal Bukovsky <michal.bukovsky@firma.seznam.cz>  Mon, 10 Jun 2019 12:17:45 +0100
+
 python-teng (4.0.3) stable; urgency=low
 
   * preserve types
