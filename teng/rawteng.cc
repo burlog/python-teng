@@ -335,10 +335,6 @@ void fragmentlist_add_variable(
     if (obj.is_none())
         return self.addValue("");
 
-    bp::extract<bool> is_bool(obj);
-    if (is_bool.check())
-        return self.addValue(is_bool());
-
     bp::extract<int> is_int(obj);
     if (is_int.check())
         return self.addValue(is_int());
@@ -361,10 +357,6 @@ void fragment_add_variable(
 ) {
     if (obj.is_none())
         return self.addVariable(name, "");
-
-    bp::extract<bool> is_bool(obj);
-    if (is_bool.check())
-        return self.addVariable(name, is_bool());
 
     bp::extract<int> is_int(obj);
     if (is_int.check())
