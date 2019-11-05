@@ -1,3 +1,9 @@
+python-teng (1.0.8) stable; urgency=low
+
+  * libboost-python1.67-dev
+
+ -- Michal Bukovsky <michal.bukovsky@firma.seznam.cz>  Tue, 05 Nov 2019 11:03:08 +0100
+
 python-teng (1.0.7) stable; urgency=low
 
   * fix the order of args
