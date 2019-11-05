@@ -1,3 +1,9 @@
+python-teng (1.0.10) stable; urgency=low
+
+  * remove python2 dependecies
+
+ -- Michal Bukovsky <michal.bukovsky@firma.seznam.cz>  Tue, 05 Nov 2019 12:31:25 +0100
+
 python-teng (1.0.9) stable; urgency=low
 
   * don't build python2 packages
