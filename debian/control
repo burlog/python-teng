@@ -16,12 +16,6 @@ Build-Depends: python-all-dev,
                dh-python
 Standards-Version: 3.8.4
 
-Package: python-teng
-Architecture: amd64
-Depends: ${misc:Depends}, ${python:Depends}, ${shlibs:Depends}
-Provides: ${python:Provides}
-Description: Python2 module for Teng.
-
 Package: python3-teng
 Architecture: amd64
 Depends: ${misc:Depends}, ${python3:Depends}, ${shlibs:Depends}
