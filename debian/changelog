@@ -1,3 +1,9 @@
+python-teng (1.0.12) stable; urgency=low
+
+  * fix
+
+ -- Michal Bukovsky <michal.bukovsky@firma.seznam.cz>  Tue, 05 Nov 2019 12:46:09 +0100
+
 python-teng (1.0.11) stable; urgency=low
 
   * boost python detection
