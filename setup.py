@@ -25,7 +25,7 @@ boost_python = 'boost_python-py%d%d' % (version[0], version[1])
 if os.system(pattern.replace('XXX', boost_python)) != 0:
     boost_python = 'boost_python-%d.%d' % (version[0], version[1])
     if os.system(pattern.replace('XXX', boost_python)) != 0:
-        boost_python = 'boost_python-%d%d' % (version[0], version[1])
+        boost_python = 'boost_python%d%d' % (version[0], version[1])
         if os.system(pattern.replace('XXX', boost_python)) != 0:
             print('can\'t find boost_python library')
             sys.exit(1)
