@@ -32,7 +32,7 @@ if os.system(pattern.replace('XXX', boost_python)) != 0:
 print('checking boost_python library name: ' + boost_python)
 
 setup(name="teng",
-      version="4.0.7~burloglibteng4",
+      version="4.0.8",
       description="Teng python module written on boost python.",
       author="Michal Bukovsky",
       author_email="burlog@seznam.cz",
