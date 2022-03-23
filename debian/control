@@ -3,11 +3,7 @@ Maintainer: Michal Bukovsky <michal.bukovsky@firma.seznam.cz>
 Section: python
 Priority: optional
 Build-Depends: debhelper (>= 9~),
-               libboost-python1.50-dev
-               | libboost-python1.54-dev
-               | libboost-python1.55-dev
-               | libboost-python1.62-dev
-               | libboost-python1.67-dev,
+               libboost-python-dev,
                libteng-dev (<< 4.0.0),
                python3-all-dev,
                python3-setuptools,
