@@ -7,7 +7,7 @@
 # AUTHOR        Michal Bukovsky <burlog@seznam.cz>
 #
 
-from collections import Iterable, Mapping
+from collections.abc import Iterable, Mapping
 
 from rawteng import Teng
 from rawteng import listSupportedContentTypes
