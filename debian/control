@@ -2,9 +2,11 @@ Source: python-teng
 Maintainer: Michal Bukovsky <michal.bukovsky@firma.seznam.cz>
 Section: python
 Priority: optional
-Build-Depends: debhelper (>= 9~),
+Build-Depends: debhelper (>= 10~),
+               build-essential,
+               meson,
                libboost-python-dev,
-               libteng-dev (>= 4.0.7),
+               libteng-dev (>= 5.0.8),
                python3-all-dev,
                pkgconf,
                python3-setuptools,

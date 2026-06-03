@@ -14,7 +14,7 @@ py3 = import('python').find_installation('python3')
 
 ext_dependencies = [
   dependency('boost', modules: ['python3']),
-  dependency('libteng', version: '>= 5.0.7')
+  dependency('libteng', version: '>= 5.0.8')
 ]
 
 pyext = py3.extension_module(
