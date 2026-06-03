@@ -1,0 +1,5 @@
+[wrap-git]
+url = git@github.com:seznam/teng.git
+revision = v5.0.8
+depth = 1
+

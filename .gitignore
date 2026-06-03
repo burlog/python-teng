@@ -1,0 +1,9 @@
+.pybuild/
+build/
+debian/.debhelper/
+debian/python3-teng/
+dist/
+teng.egg-info/
+wheelhouse/
+subprojects/.wraplock
+
