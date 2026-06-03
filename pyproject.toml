@@ -1,0 +1,26 @@
+[project]
+name = "szn-teng"
+version = "4.0.8"
+description = "Teng python module written on boost python."
+authors = [
+    {name = "Michal Bukovsky", email = "burlog@seznam.cz"},
+]
+requires-python = ">=3.11"
+
+[build-system]
+requires = ["meson-python>=0.14", "meson>=1.1"]
+build-backend = "mesonpy"
+
+[tool.meson-python.args]
+setup = ['-Dwrap_mode=forcefallback']
+
+[tool.cibuildwheel]
+#build = "cp311-* cp312-* cp313-* cp314-*"
+build = "cp314-*"
+skip = "cp38-* cp39-* cp310-* *_ppc64le *_i686 *_s390x *_aarch64 *-musllinux*"
+
+[tool.cibuildwheel.linux]
+manylinux-x86_64-image = "quay.io/pypa/manylinux_2_28_x86_64"
+before-build = "bash {project}/tools/cibw_before_build_linux.sh {project}"
+environment = { CIBW_BUILD_VERBOSITY = "0", LD_LIBRARY_PATH="/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH" }
+
