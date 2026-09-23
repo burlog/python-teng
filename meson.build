@@ -1,7 +1,7 @@
 project(
   'szn-python3-teng',
   'cpp',
-  version : '4.0.9',
+  version : '4.0.10',
   default_options: [
     'cpp_std=c++17',
     'warning_level=2',

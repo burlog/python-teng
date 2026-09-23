@@ -1,3 +1,20 @@
+python-teng (4.0.10) stable; urgency=low
+
+  * Ignore meson wrap checkouts in subprojects
+  * The subprojects/<name>/ directories are clones made by meson from the wrap
+  * files, and subprojects/catch2-with-main.wrap is a wrap-redirect that meson
+  * generates for libteng's own subproject. Only the hand written wrap files
+  * belong to the repository.
+  * Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>
+  * Lock libteng to v5.0.12
+  * The release brings the fix for FileWriter_t swallowing the reason why the
+  * output file could not be opened. Until now generatePage() returned status
+  * 0 with an empty error log in that case, so a failure to write the page was
+  * invisible to the caller.
+  * Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>
+
+ -- Michal Bukovský <burlog@seznam.cz>  Wed, 23 Sep 2026 15:08:21 +0200
+
 python-teng (4.0.9) stable; urgency=low
 
   * Sync debian package with new meson build
