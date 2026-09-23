@@ -6,4 +6,6 @@ dist/
 teng.egg-info/
 wheelhouse/
 subprojects/.wraplock
+subprojects/*/
+subprojects/catch2-with-main.wrap
 
