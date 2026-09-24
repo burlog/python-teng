@@ -39,9 +39,15 @@ meson compile -C build
 Try it from the build dir (ASan must be preloaded into the interpreter):
 
 ```sh
-LD_PRELOAD=$(g++ -print-file-name=libasan.so) PYTHONPATH=build:. \
-  python3 -c 'import teng; print(teng.Teng("."))'
+LD_PRELOAD="$(g++ -print-file-name=libasan.so) $(g++ -print-file-name=libstdc++.so)" \
+  PYTHONPATH=build:. python3 -c 'import teng; print(teng.Teng("."))'
 ```
+
+Preload `libstdc++` too: `python3` does not link it, so ASan's `__cxa_throw`
+interceptor would find no real symbol and the first C++ exception (e.g.
+Boost.Python ending an iteration) aborts with `CHECK failed:
+asan_interceptors.cpp`. Add `ASAN_OPTIONS=detect_leaks=0` to silence leak
+reports from the interpreter itself.
 
 Other targets (do not run unless asked; they need network/containers):
 
