@@ -1,3 +1,22 @@
+python-teng (4.0.11) stable; urgency=low
+
+  * Lock libteng to v5.0.13
+  * The release brings the fix for the missing dictionary item warning that
+  * was emitted even if the lookup was guarded by dictexist(), because the
+  * lookup was resolved while the template was compiled. The warning of a
+  * missing item is now emitted only if the lookup is really evaluated and it
+  * is prefixed with "Runtime: ". The release also makes the compile time
+  * folding of constant expressions work again.
+  * Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>
+  * Document preloading libstdc++ for sanitized builds
+  * Without it ASan's __cxa_throw interceptor resolves to NULL, because
+  * python3 does not link libstdc++, and the first C++ exception thrown in
+  * the extension aborts the interpreter.
+  * Co-Authored-By: Claude Opus 5.5 (1M context) <noreply@anthropic.com>
+  * doc: AI
+
+ -- Michal Bukovský <burlog@seznam.cz>  Fri, 25 Sep 2026 07:18:24 +0200
+
 python-teng (4.0.10) stable; urgency=low
 
   * Ignore meson wrap checkouts in subprojects

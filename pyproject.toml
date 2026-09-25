@@ -1,6 +1,6 @@
 [project]
 name = "szn-teng"
-version = "4.0.10"
+version = "4.0.11"
 description = "Teng python module written on boost python."
 authors = [
     {name = "Michal Bukovsky", email = "burlog@seznam.cz"},
